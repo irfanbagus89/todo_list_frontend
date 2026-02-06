@@ -11,6 +11,7 @@ import { useGetTodos } from "@/services/Todos/getTodos";
 import { useCreateTodo } from "@/services/Todos/createTodo";
 import { useUpdateTodo } from "@/services/Todos/updateTodo";
 import { useDeleteTodo } from "@/services/Todos/deleteTodo";
+import { useToggleTodo } from "@/services/Todos/toggleTodo";
 import { TodoCard } from "./components/TodoCard";
 import { TodoSearch } from "./components/TodoSearch";
 import { TodoFilters } from "./components/TodoFilters";
@@ -24,8 +25,8 @@ export default function TodoList() {
     error,
     mutate,
   } = useGetTodos({ page: 1, limit: 20 });
-  const { trigger: updateTodo } = useUpdateTodo();
   const { trigger: deleteTodo } = useDeleteTodo();
+  const { trigger: toggleTodo } = useToggleTodo();
   console.log("Todos:", todos);
   const [filters, setFilters] = useState({
     priority: "all",
@@ -77,12 +78,12 @@ export default function TodoList() {
 
   const handleToggleComplete = async (id) => {
     try {
-      await updateTodo({ id, data: { status: "completed" } });
-      showToast.success("Todo marked as completed!");
+      await toggleTodo(id);
+      showToast.success("Todo status toggled!");
       mutate();
     } catch (error) {
-      console.error("Failed to update todo:", error);
-      showToast.error("Failed to update todo");
+      console.error("Failed to toggle todo:", error);
+      showToast.error("Failed to toggle todo");
     }
   };
 
